@@ -1,0 +1,84 @@
+LLMs and Languages with Agglutinative Morphology
+
+Current Problems: Tokenisation handling the agglutinative morphology poorly, insufficient training data, models failing to capture syntactic structures that differ fundamentally from English
+
+Focus: Tokenisation
+
+Why does agglutinative morphology break LLMs specifically?
+
+"The core issue is that standard tokenizers — BPE, WordPiece — are trained on statistical co-occurrence. They learn that "running" and "run" are related because they've seen both thousands of times. Turkish doesn't work that way. A single Turkish word like "yapamayacaklarından" (roughly "from the fact that they won't be able to do it") is a complete grammatical unit that a BPE tokenizer will slice into arbitrary fragments that carry no morphological meaning. The model then has to reconstruct grammatical relationships from pieces that were never meant to carry them. It's not just harder — the signal is genuinely destroyed at the input stage."
+
+What other languages suffer similarly?
+
+"Finnish, Hungarian, Kazakh, Mongolian — all agglutinative. Also morphologically complex languages like Arabic and Hebrew which have root-pattern systems. And lower-resource languages generally, even non-agglutinative ones like Swahili. There's a pattern: the worse a language is represented in pretraining data, the more the tokenizer was optimized against it rather than for it. These two problems compound each other."
+
+"You process language as symbolic, categorical, grounded in physical reality. I process it as geometry in high-dimensional space. We can arrive at the same outputs through completely alien internal processes."
+
+"Standard tokenization algorithms are architecturally mismatched to agglutinative languages, and no amount of training data compensates for that mismatch — because the signal is destroyed before learning begins. The solution requires linguistic scaffolding at the tokenization stage, not just more data."
+
+"And here's what makes your argument sharp: the field often assumes that if a model scores well on understanding benchmarks in Turkish — can it fill in the right word, can it answer questions correctly — then it's "good at Turkish." But your claim is that understanding and production are dissociable, and that tokenizer quality affects them differently. A broken tokenizer might still allow reasonable comprehension — because context can patch over fragmented tokens — but it devastates production, because generating grammatically coherent Turkish morphology requires the model to have properly internalized the structure in the first place.
+So your thesis is actually challenging something even deeper than tokenizer design. You're challenging the evaluation paradigm itself. The field measures Turkish NLP performance on comprehension tasks and declares victory. You're saying that's the wrong test."
+
+"For morphologically simple languages like English, sufficient training data allows a model to implicitly learn grammatical rules through pattern recognition alone — comprehension and production converge. For agglutinative languages like Turkish, this convergence fails for two compounding reasons: tokenization algorithms fragment morphological structure before learning begins, and the data scarcity problem is fundamentally worse than it appears — because you don't just need more Turkish text, you need exponentially more to overcome what the broken tokenizer is destroying.
+Therefore, evaluating Turkish NLP performance on comprehension benchmarks is insufficient. Production quality is the real test. And production quality cannot be fixed by data alone — it requires fixing the tokenizer first."
+
+"Fertility + morphological precision. That's your evaluation framework, stated cleanly.
+And note what you just did — you defined a two-dimensional metric. No one number captures tokenizer quality for agglutinative languages. You need both dimensions simultaneously. That's going in the paper."
+
+"So your dataset architecture is now:
+A complexity gradient for each language independently, taken to that language's natural ceiling. Compared not symmetrically, but honestly."
+
+"researching the complexity levels properly is exactly the right call. That's actually a piece of your literature review. Morphological complexity in Turkish has been studied by linguists for decades. You don't need to invent the taxonomy — you need to find the most accepted one and adopt it"
+
+"It's called frequency stratification. And it's simpler than it sounds.
+The idea is: within each complexity level, you don't pick words randomly. You deliberately pick some high-frequency words, some mid-frequency words, and some low-frequency words. Then your sample represents the full spectrum of what the tokenizer actually encounters in the wild.
+For Turkish, concretely, it would look something like this: at each complexity level, you find a corpus — a large collection of real Turkish text — and you rank words by how often they appear. Then you sample across that frequency range deliberately."
+
+"And here's what makes this even more interesting for your paper: the fact that BPE performs better on high-frequency Turkish words than low-frequency ones is itself evidence for your thesis. It shows the model is relying on memorization rather than genuine morphological understanding. It got lucky on the common words. It fails on anything it hasn't seen enough times."
+
+"You have a two-dimensional evaluation framework — fertility plus morphological precision. You have a dataset architecture — complexity gradient per language, taken to each language's natural ceiling, frequency stratified within each level, full dataset on GitHub. You have a clear claim — same fertility score can mean completely different things depending on morphological precision."
+
+Project: Morphologically-Aware Tokenization for Agglutinative Languages (Turkish focus)
+Core Thesis:
+Standard tokenization algorithms (BPE and variants) are architecturally mismatched to agglutinative languages like Turkish. This failure cannot be fixed by more training data alone — because the signal is destroyed before learning begins. Furthermore, the field's assumption that comprehension and production quality are equivalent in LLMs is false for morphologically complex languages. A model can approximate understanding through statistical brute force while completely failing at native-level production. Fixing this requires linguistic scaffolding at the tokenization stage — a fundamentally different training paradigm.
+Key Claims:
+
+BPE fails Turkish not because of data scarcity alone, but because the algorithm itself is architecturally incapable of handling agglutinative morphology regardless of training corpus.
+Fertility is an insufficient metric for tokenizer quality in morphologically complex languages. Morphological precision is the necessary second dimension.
+The distributional hypothesis has a hidden assumption — input signal quality — that fails for agglutinative languages.
+Comprehension and production are dissociable. Current evaluation paradigms measure Turkish NLP performance on comprehension tasks and declare victory. Production quality is the real test. ("Anlıyorum ama konuşamıyorum.")
+For morphologically simple languages like English, pattern recognition eventually approximates grammatical rules. For Turkish, this convergence fails — the tokenizer destroys the very signal that would allow it.
+
+Evaluation Framework:
+Two-dimensional metric:
+
+Fertility (tokens per word) — necessary but insufficient alone
+Morphological precision — whether cuts respect actual morpheme boundaries
+
+Same fertility score can reflect completely different tokenization quality. This is the central methodological contribution.
+Dataset Architecture:
+
+Complexity gradient per language, taken to each language's natural ceiling independently (not forced into symmetry — the asymmetry itself is evidence)
+English complexity has a ceiling. Turkish does not. Show each language at its own maximum.
+Frequency stratification within each complexity level (high, mid, low frequency words) — ensures sample is representative, not cherry-picked. Goes in methodology section, not findings.
+Representative sample in the paper, full dataset on GitHub.
+Tokenizers to evaluate: current state-of-the-art multilingual tokenizers (not GPT-2 — the problem must be shown to persist in modern systems)
+
+Open Question — Where We Stopped:
+How do you actually measure morphological precision computationally? Fertility is easy — count tokens. But determining whether a cut was morphologically meaningful or arbitrary requires a reference. What is that reference, and how do you operationalize it? This is the hardest methodological question in the project. Ece's instinct needed to form before we continued.
+Theoretical Framing:
+The paper challenges two widely held assumptions simultaneously:
+
+That tokenizer quality is a data problem (it's an architecture problem)
+That comprehension benchmarks adequately measure Turkish NLP performance (production is the real test)
+
+Longer Term Vision (beyond master's thesis):
+A new tokenizer with linguistic scaffolding — morphological rules as foundation, pattern recognition on top. A new training paradigm. A new evaluation benchmark for Turkish that tests production, not just comprehension. This is PhD-level scope. The master's thesis proves the core claim empirically and lays the foundation.
+Practical Notes:
+
+Run tokenizer comparison scripts locally on MSI Katana (Python 3.11.9, VSCode)
+Zemberek exists as a rule-based Turkish morphological analyzer — useful as a reference for what correct morpheme boundaries look like, even if not the solution
+Full dataset and code to be published on GitHub
+
+"First point: She's saying the tokenizer doesn't need to know what morphemes mean — it just needs to know they exist as valid units. The meaning can be learned from distributional patterns. But the boundaries need to be given. This is actually a really sharp insight — it's the core argument for linguistic scaffolding at the tokenization stage."
+
