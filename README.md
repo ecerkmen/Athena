@@ -36,7 +36,7 @@ Built with Python · ChromaDB · sentence-transformers · Anthropic API
 **1. Clone the repository**
 
 ```
-git clone https://github.com/yourusername/athena.git
+git clone https://github.com/ecerkmen/athena.git
 cd athena
 ```
 
@@ -145,4 +145,4 @@ The `Athena/` folder (created on your Desktop when you run the script) is not pa
 
 ## Built by
 
-Ece — [github.com/yourusername](https://github.com/ecerkmen)
+Ece — [github.com/ecerkmen](https://github.com/ecerkmen)
