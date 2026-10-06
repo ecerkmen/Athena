@@ -146,4 +146,5 @@ The `Athena/` folder (created on your Desktop when you run the script) is not pa
 ## Built by
 
 Ece Erkmen (github.com/ecerkmen)
+
 Claude (Anthropic): architectural guidance and Socratic mentorship throughout development. An independent project. Not affiliated with or endorsed by Anthropic.
